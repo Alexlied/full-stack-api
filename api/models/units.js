@@ -1,9 +1,17 @@
 var mongoose = require('mongoose');
+const Company = require('./company').schema;
 
 var schema = new mongoose.Schema({
     kind: {
         type: String,
-        required: true
+        required: true,
+        enum: [
+            "seat",
+            "desk",
+            "small office",
+            "large office",
+            "floor"
+        ]
     },
     floor: {
         type: Number,
@@ -13,7 +21,7 @@ var schema = new mongoose.Schema({
         type: Number
     },
     company: {
-        type: String
+        type: Company
     }
 }, {
         timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }

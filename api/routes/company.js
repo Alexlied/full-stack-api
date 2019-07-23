@@ -1,9 +1,9 @@
 const router = require('express').Router()
-const Companies = require('../models/companies')
+const Company = require('../models/company')
 
 router.get('/', async (req, res, next) => {
   const status = 200
-  const response = await Companies.find()
+  const response = await Company.find().select("-__v")
 
   res.json({ status, response })
 })
