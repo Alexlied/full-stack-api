@@ -22,7 +22,5 @@ function parseQuery(parameter) {
     //   return parameter;
     // case 'employees_gte':
     //   return parameter;
-    // case 'birthday':
-    //   return parameter;
   }
 }
