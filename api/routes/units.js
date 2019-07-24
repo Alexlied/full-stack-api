@@ -80,7 +80,7 @@ router.delete('/:id/company', async (req, res, next) => {
 router.get('/:id/company/employees', async (req, res, next) => {
   const status = 201
   try {
-    let response = await Units.findOne({ _id: req.params.id })
+    let response = await Units.findOne({ _id: req.params.id }).select('-__v')
     let responseEmployees = response.company.employees
 
     res.json({ status, responseEmployees })
@@ -94,12 +94,60 @@ router.get('/:id/company/employees', async (req, res, next) => {
 router.get('/:id/company/employees/:eid', async (req, res, next) => {
   const status = 201
   try {
-    let response = await Units.findOne({ _id: req.params.id })
-    let responseEmployee = response.company.employees.id({_id: req.params.eid})
+    let response = await Units.findOne({ _id: req.params.id }).select('-__v')
+    let responseEmployee = response.company.employees.id({ _id: req.params.eid })
 
     res.json({ status, responseEmployee })
   } catch (error) {
     let customError = new Error("Unable to get employees from ID = " + req.params.id)
+    customError.status = 404
+    next(customError)
+  }
+})
+
+router.post('/:id/company/employees/', async (req, res, next) => {
+  const status = 201
+  try {
+    let unit = await Units.findById(id).select('-__v')
+    unit.company.employees.push(req.body)
+    unit.save()
+    const response = req.body
+
+    res.json({ status, response })
+  } catch (error) {
+    let customError = new Error("Unable to post employees from ID = " + req.params.id)
+    customError.status = 404
+    next(customError)
+  }
+})
+
+router.patch('/:id/company/employees/:eid', async (req, res, next) => {
+  const status = 201
+  try {
+    let response = await Units.findOne({ _id: req.params.id }).select('-__v')
+    let responseEmployee = response.company.employees.id({ _id: req.params.eid })
+    responseEmployee.set(req.body)
+    response.save()
+
+    res.json({ status, responseEmployee })
+  } catch (error) {
+    let customError = new Error("Unable to patch employees from ID = " + req.params.id)
+    customError.status = 404
+    next(customError)
+  }
+})
+
+router.delete('/:id/company/employees/:eid', async (req, res, next) => {
+  const status = 201
+  try {
+    let response = await Units.findOne({ _id: req.params.id })
+    let responseEmployee = response.company.employees.id({ _id: req.params.eid })
+    responseEmployee.remove()
+    response.save()
+
+    res.json({ status, responseEmployee })
+  } catch (error) {
+    let customError = new Error("Unable to delete employees from ID = " + req.params.id)
     customError.status = 404
     next(customError)
   }
