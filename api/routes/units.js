@@ -4,6 +4,7 @@ const Units = require('../models/units')
 router.get('/', async (req, res, next) => {
   const status = 200
   let parameter = req.query
+
   parameter = parseQuery(parameter);
 
   const response = await Units.find(parameter).select("-__v")
@@ -14,20 +15,18 @@ router.get('/', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   const status = 201
 
-  Units.create(req.body).then(response => {
-    res.json({ status, response })
-  }).catch(error => {
-    console.error(error)
-    const e = new Error('Something went bad')
-    e.status = 400
-    next(e)
-  })
-
-  res.json({ status, response })
+  try {
+    const response = await Units.create(req.body)
+    res.status(status).json({ status, response })
+  } catch (error) {
+    let customError = new Error("Unable to post unit")
+    customError.status = 404
+    next(customError)
+  }
 })
 
 router.patch('/:id', async (req, res, next) => {
-  const status = 201
+  const status = 200
   try {
     const response = await Units.findOneAndUpdate({
       _id: req.params.id

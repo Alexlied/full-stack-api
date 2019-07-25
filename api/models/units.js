@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-const Company = require('./company').schema;
+const Companies = require('./companies').schema;
 
 var schema = new mongoose.Schema({
     kind: {
@@ -21,7 +21,7 @@ var schema = new mongoose.Schema({
         type: Number
     },
     company: {
-        type: Company
+        type: Companies
     }
 }, {
         timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
